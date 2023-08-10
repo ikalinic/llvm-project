@@ -17,6 +17,7 @@ add_llvm_component_library(LLVMTransformUtils
   CodeLayout.cpp
   CodeMoverUtils.cpp
   CtorUtils.cpp
+  DebugCount.cpp
   CountVisits.cpp
   Debugify.cpp
   DemoteRegToStack.cpp
@@ -63,6 +64,7 @@ add_llvm_component_library(LLVMTransformUtils
   PredicateInfo.cpp
   PromoteMemoryToRegister.cpp
   RelLookupTableConverter.cpp
+  RemoveDebugInst.cpp
   ScalarEvolutionExpander.cpp
   SCCPSolver.cpp
   StripGCRelocates.cpp
