@@ -5,8 +5,6 @@
 
 using namespace llvm;
 
-// TODO: zadatak 4, 5, 6
-
 PreservedAnalyses RemoveDebugInstPass::run(Function &F,
                                       FunctionAnalysisManager &AM) {
 

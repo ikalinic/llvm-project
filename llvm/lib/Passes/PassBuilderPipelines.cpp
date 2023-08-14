@@ -128,6 +128,7 @@
 #include "llvm/Transforms/Utils/MoveAutoInit.h"
 #include "llvm/Transforms/Utils/NameAnonGlobals.h"
 #include "llvm/Transforms/Utils/RelLookupTableConverter.h"
+#include "llvm/Transforms/Utils/RemoveDebugInst.h"
 #include "llvm/Transforms/Utils/SimplifyCFGOptions.h"
 #include "llvm/Transforms/Vectorize/LoopVectorize.h"
 #include "llvm/Transforms/Vectorize/SLPVectorizer.h"
@@ -149,6 +150,11 @@ static cl::opt<bool> EnableSyntheticCounts(
     "enable-npm-synthetic-counts", cl::Hidden,
     cl::desc("Run synthetic function entry count generation "
              "pass"));
+
+static cl::opt<bool> RemoveDebugInst("remove-debug-inst",
+  cl::desc("Remove debug instructions in O2 pipeline"),
+  cl::init(false)
+);
 
 /// Flag to enable inline deferral during PGO.
 static cl::opt<bool>
@@ -1462,6 +1468,13 @@ PassBuilder::buildPerModuleDefaultPipeline(OptimizationLevel Level,
                                           : ThinOrFullLTOPhase::None;
   // Add the core simplification pipeline.
   MPM.addPass(buildModuleSimplificationPipeline(Level, LTOPhase));
+
+  // Add custom pass for removing llvm.dbg.* instructions for O2
+  if (Level == OptimizationLevel::O2 && RemoveDebugInst) {
+    FunctionPassManager FPM;
+    FPM.addPass(RemoveDebugInstPass());
+    MPM.addPass(createModuleToFunctionPassAdaptor(std::move(FPM)));
+  }
 
   // Now add the optimization pipeline.
   MPM.addPass(buildModuleOptimizationPipeline(Level, LTOPhase));
