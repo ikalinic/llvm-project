@@ -65,6 +65,10 @@ static cl::opt<bool>
                      cl::desc("Enable the tile register allocation pass"),
                      cl::init(true), cl::Hidden);
 
+static cl::opt<bool> RemoveDebugMachineInst("x86-remove-debug-inst",
+                              cl::desc("Remove debug machine instructions"),
+                              cl::init(false), cl::Hidden);
+
 extern "C" LLVM_EXTERNAL_VISIBILITY void LLVMInitializeX86Target() {
   // Register the target.
   RegisterTargetMachine<X86TargetMachine> X(getTheX86_32Target());
@@ -557,6 +561,10 @@ void X86PassConfig::addPostRegAlloc() {
 void X86PassConfig::addPreSched2() {
   addPass(createX86ExpandPseudoPass());
   addPass(createKCFIPass());
+
+  if (getOptLevel() == CodeGenOpt::Default && RemoveDebugMachineInst) {
+    addPass(createX86RemoveDebugMachineInstPass());
+  }
 }
 
 void X86PassConfig::addPreEmitPass() {
