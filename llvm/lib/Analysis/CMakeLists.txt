@@ -82,6 +82,7 @@ add_llvm_component_library(LLVMAnalysis
   LazyCallGraph.cpp
   LazyValueInfo.cpp
   Lint.cpp
+  LivenessAnalysis.cpp
   Loads.cpp
   Local.cpp
   LoopAccessAnalysis.cpp
