@@ -69,6 +69,11 @@ static cl::opt<bool> RemoveDebugMachineInst("x86-remove-debug-inst",
                               cl::desc("Remove debug machine instructions"),
                               cl::init(false), cl::Hidden);
 
+static cl::opt<bool> LivenessAnalysisCustomPass("x86-custom-liveness-analysis",
+                              cl::desc("MIR liveness analysis"),
+                              cl::init(false), cl::Hidden);
+
+
 extern "C" LLVM_EXTERNAL_VISIBILITY void LLVMInitializeX86Target() {
   // Register the target.
   RegisterTargetMachine<X86TargetMachine> X(getTheX86_32Target());
@@ -556,6 +561,11 @@ void X86PassConfig::addPostRegAlloc() {
   // analyses needed by the LVIHardening pass when compiling at -O0.
   if (getOptLevel() != CodeGenOpt::None)
     addPass(createX86LoadValueInjectionLoadHardeningPass());
+
+  // Adds custom liveness analysis pass
+  if(LivenessAnalysisCustomPass) {
+    addPass(createX86LivenessAnalysisPass());
+  }
 }
 
 void X86PassConfig::addPreSched2() {

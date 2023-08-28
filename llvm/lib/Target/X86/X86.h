@@ -161,6 +161,10 @@ FunctionPass *createX86PartialReductionPass();
 /// Removes debug machine instructions
 FunctionPass *createX86RemoveDebugMachineInstPass();
 
+/// Liveness analysis on MIR
+
+FunctionPass *createX86LivenessAnalysisPass();
+
 InstructionSelector *createX86InstructionSelector(const X86TargetMachine &TM,
                                                   X86Subtarget &,
                                                   X86RegisterBankInfo &);
@@ -205,6 +209,7 @@ void initializeX86SpeculativeExecutionSideEffectSuppressionPass(PassRegistry &);
 void initializeX86SpeculativeLoadHardeningPassPass(PassRegistry &);
 void initializeX86TileConfigPass(PassRegistry &);
 void initializeX86RemoveDebugMachineInstPass(PassRegistry &);
+void initializeX86LivenessAnalysisPass(PassRegistry &);
 
 namespace X86AS {
 enum : unsigned {
